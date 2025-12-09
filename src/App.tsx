@@ -1,5 +1,6 @@
 import TrainingLogForm from './features/training/TrainingLogForm';
 import StretchSuggestion from './features/stretch/StretchSuggestion';
+import IntervalTimer from './features/timer/IntervalTimer';
 import SectionCard from './components/SectionCard';
 import './styles.css';
 
@@ -33,12 +34,8 @@ function App() {
           <p className="placeholder">プッシュ通知設定と休養日リマインドを管理します。</p>
         </SectionCard>
 
-        <SectionCard title="テンプレート / インターバル / フォームチェック">
-          <ul className="feature-list">
-            <li>よく使うメニューをテンプレート化して呼び出し</li>
-            <li>インターバルタイマーで休憩時間をガイド</li>
-            <li>フォームチェック用の動画アップロード</li>
-          </ul>
+        <SectionCard title="インターバルタイマー">
+          <IntervalTimer />
         </SectionCard>
       </main>
     </div>
