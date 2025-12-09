@@ -8,3 +8,12 @@ export interface TrainingEntry {
   sets: TrainingSet[];
   intervalSeconds?: number;
 }
+
+export interface TrainingLog {
+  id: string;
+  date: string;
+  exercise: string;
+  sets: TrainingSet[];
+  intervalSeconds?: number;
+  memo?: string;
+}

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { TrainingEntry, TrainingSet } from '../../types/training';
+import { saveTrainingLog } from '../../lib/storage';
 
 const trainingTemplates: TrainingEntry[] = [
   {
@@ -26,6 +27,7 @@ function TrainingLogForm() {
   const [exercise, setExercise] = useState('ベンチプレス');
   const [sets, setSets] = useState<TrainingSet[]>([{ weight: 40, reps: 10 }]);
   const [intervalSeconds, setIntervalSeconds] = useState(90);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   const stretchHints = useMemo(() => {
     if (exercise.includes('ベンチ')) {
@@ -49,6 +51,26 @@ function TrainingLogForm() {
     setExercise(template.exercise);
     setSets(template.sets);
     setIntervalSeconds(template.intervalSeconds ?? 90);
+  };
+
+  const handleSave = () => {
+    try {
+      saveTrainingLog({
+        exercise,
+        sets,
+        intervalSeconds,
+      });
+      setSaveMessage('記録を保存しました！');
+      setTimeout(() => setSaveMessage(null), 3000);
+
+      // フォームをリセット
+      setExercise('ベンチプレス');
+      setSets([{ weight: 40, reps: 10 }]);
+      setIntervalSeconds(90);
+    } catch (error) {
+      setSaveMessage('保存に失敗しました');
+      setTimeout(() => setSaveMessage(null), 3000);
+    }
   };
 
   return (
@@ -123,8 +145,14 @@ function TrainingLogForm() {
         </ul>
       </div>
 
-      <button type="button" className="primary-button">
-        記録を保存（モック）
+      {saveMessage && (
+        <div className={`save-message ${saveMessage.includes('失敗') ? 'error' : 'success'}`}>
+          {saveMessage}
+        </div>
+      )}
+
+      <button type="button" className="primary-button" onClick={handleSave}>
+        記録を保存
       </button>
     </div>
   );

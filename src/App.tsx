@@ -1,4 +1,5 @@
 import TrainingLogForm from './features/training/TrainingLogForm';
+import TrainingHistory from './features/training/TrainingHistory';
 import StretchSuggestion from './features/stretch/StretchSuggestion';
 import IntervalTimer from './features/timer/IntervalTimer';
 import SectionCard from './components/SectionCard';
@@ -20,6 +21,10 @@ function App() {
       <main className="app-main">
         <SectionCard title="トレーニング記録">
           <TrainingLogForm />
+        </SectionCard>
+
+        <SectionCard title="トレーニング履歴">
+          <TrainingHistory />
         </SectionCard>
 
         <SectionCard title="ストレッチの提案">
