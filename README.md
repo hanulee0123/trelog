@@ -25,6 +25,5 @@ npm run dev
 - ファイル名は `task-YYYYMMDD-<slug>.md` のように日付と内容が分かる形式を推奨します。
 
 ## デプロイ (Vercel)
-- 本リポジトリはまだ GitHub リモートが未設定です。初回は `git remote add origin <repo-url>` で紐付け、`git push -u origin <branch-name>` でプッシュしてください。
-- GitHub へのプッシュをトリガーに Vercel が自動ビルド・デプロイします。ブランチ/プレビューの運用ルールはチームで合意した設定に従ってください。
+- GitHub へのプッシュをトリガーに Vercel が自動ビルド・デプロイします。
 - プッシュ後は Vercel ダッシュボードでビルドステータスを確認し、必要に応じて環境変数やビルドログを見直してください。
