@@ -1,0 +1,248 @@
+/* Calendar Container */
+.training-calendar-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Override existing react-calendar styles */
+.react-calendar {
+    width: 100% !important;
+    max-width: 100%;
+    border: none !important;
+    background: white !important;
+    font-family: inherit !important;
+    line-height: 1.125em !important;
+}
+
+.react-calendar--doubleView {
+    width: 700px;
+}
+
+.react-calendar--doubleView .react-calendar__viewContainer {
+    display: flex;
+    margin: -0.5em;
+}
+
+.react-calendar--doubleView .react-calendar__viewContainer>* {
+    width: 50%;
+    margin: 0.5em;
+}
+
+.react-calendar,
+.react-calendar *,
+.react-calendar *:before,
+.react-calendar *:after {
+    box-sizing: border-box;
+}
+
+/* Navigation (Header) */
+.react-calendar__navigation {
+    display: flex;
+    height: 44px;
+    margin-bottom: 1em;
+}
+
+.react-calendar__navigation button {
+    min-width: 44px;
+    background: none;
+    font-size: 16px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.react-calendar__navigation button:disabled {
+    background-color: #f0f0f0;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+    background-color: #f1f5f9;
+    border-radius: 8px;
+}
+
+/* Month View */
+.react-calendar__month-view__weekdays {
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 0.8em;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+.react-calendar__month-view__days__day--weekend {
+    color: #ef4444;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+    color: #cbd5e1;
+}
+
+/* Tiles (Days) */
+.react-calendar__tile {
+    max-width: 100%;
+    padding: 8px 4px;
+    background: none;
+    text-align: center;
+    line-height: 16px;
+    min-height: 70px;
+    /* Make tiles taller to fit content */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+}
+
+.react-calendar__tile:disabled {
+    background-color: #f0f0f0;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+    background-color: #f8fafc;
+    border-radius: 8px;
+}
+
+.react-calendar__tile--now {
+    background: #eff6ff;
+    border-radius: 8px;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+.react-calendar__tile--now:enabled:hover,
+.react-calendar__tile--now:enabled:focus {
+    background: #dbeafe;
+}
+
+.react-calendar__tile--hasActive {
+    background: #2563eb;
+}
+
+.react-calendar__tile--active {
+    background: #2563eb !important;
+    border-radius: 8px;
+    color: white !important;
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+    background: #1d4ed8 !important;
+}
+
+/* Custom Tile Content (Exercise Dots) */
+.calendar-tile-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+}
+
+.calendar-exercise-dot {
+    display: flex;
+    justify-content: space-between;
+    /* Change to space-between or start */
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    background-color: #e0f2fe;
+    color: #0369a1;
+    padding: 1px 4px;
+    border-radius: 4px;
+    width: 100%;
+    overflow: hidden;
+    /* Ensure container clips */
+}
+
+.react-calendar__tile--active .calendar-exercise-dot {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.dot-name {
+    font-weight: 500;
+    flex: 1;
+    /* Take up available space */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    /* Align text to left */
+    min-width: 0;
+    /* Allow flex item to shrink below content size */
+}
+
+.dot-weight {
+    font-size: 9px;
+    opacity: 0.9;
+    flex-shrink: 0;
+    /* Do not shrink weight */
+    white-space: nowrap;
+}
+
+/* Details Section */
+.selected-date-details h3 {
+    font-size: 18px;
+    margin: 0 0 16px;
+    color: #0f172a;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 8px;
+}
+
+.empty-date-message {
+    color: #94a3b8;
+    font-size: 14px;
+    text-align: center;
+    padding: 20px;
+}
+
+.daily-log-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.daily-log-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.log-exercise {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.log-max-weight {
+    font-size: 12px;
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.log-sets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.log-set-tag {
+    font-size: 12px;
+    background: white;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 2px 6px;
+    color: #475569;
+}

@@ -3,6 +3,7 @@ import TrainingHistory from './features/training/TrainingHistory';
 import StretchSuggestion from './features/stretch/StretchSuggestion';
 import IntervalTimer from './features/timer/IntervalTimer';
 import SectionCard from './components/SectionCard';
+import TrainingCalendar from './features/calendar/TrainingCalendar';
 import './styles.css';
 
 function App() {
@@ -27,12 +28,12 @@ function App() {
           <TrainingHistory />
         </SectionCard>
 
-        <SectionCard title="ストレッチの提案">
-          <StretchSuggestion />
+        <SectionCard title="スケジューラー / カレンダー">
+          <TrainingCalendar />
         </SectionCard>
 
-        <SectionCard title="スケジュール / カレンダー">
-          <p className="placeholder">カレンダー連携と次回予定をここに表示します。</p>
+        <SectionCard title="ストレッチの提案">
+          <StretchSuggestion />
         </SectionCard>
 
         <SectionCard title="通知・リマインド">

@@ -7,6 +7,7 @@ export default defineConfig({
   server: {
     host: '0.0.0.0'
   },
+  // @ts-expect-error - vitest types are not picked up by tsc during build but work fine
   test: {
     globals: true,
     environment: 'jsdom',
