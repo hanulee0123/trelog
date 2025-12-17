@@ -47,6 +47,11 @@ function TrainingLogForm() {
     setSets((prev) => [...prev, { weight: 0, reps: 0 }]);
   };
 
+  const removeSet = (index: number) => {
+    if (sets.length <= 1) return;
+    setSets((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const applyTemplate = (template: TrainingEntry) => {
     setExercise(template.exercise);
     setSets(template.sets);
@@ -92,7 +97,7 @@ function TrainingLogForm() {
           </button>
         </div>
         {sets.map((item, index) => (
-          <div key={`${item.weight}-${index}`} className="set-row">
+          <div key={`${index}-${item.weight}-${item.reps}`} className="set-row">
             <label className="field">
               <span className="field-label">重量 (kg)</span>
               <input
@@ -111,6 +116,16 @@ function TrainingLogForm() {
                 onChange={(event) => updateSet(index, 'reps', Number(event.target.value))}
               />
             </label>
+            {sets.length > 1 && (
+              <button
+                type="button"
+                className="icon-button delete-set-button"
+                onClick={() => removeSet(index)}
+                aria-label="セットを削除"
+              >
+                ✕
+              </button>
+            )}
           </div>
         ))}
       </div>
