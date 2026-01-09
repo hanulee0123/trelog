@@ -1,27 +1,27 @@
-# Supabase Migration & Data Persistence (2025-12-22)
+# Supabase Migration & Data Persistence (2025-12-22 ~ 2026-01-10)
 
 ## 概要
 アプリのデータ保存先を LocalStorage から Supabase (Cloud SQL) へ移行し、ユーザー認証機能を実装しました。
-これにより、デバイス間でのデータ同期と、恒久的なデータ保存が可能になりました。
+さらに、Vercelへの本番デプロイを行い、常時アクセス可能な状態にしました。
 
 ## 実装内容
 
 ### 1. ユーザー認証 (Supabase Auth)
 - メールアドレス/パスワードによるサインアップ・ログイン機能
-- ログイン状態の管理（`AuthContext` 相当を `App.tsx` に実装）
-- `profiles` テーブルによるユーザー公開情報の管理（Triggerによる自動作成）
+- ログイン状態の管理（Authenticate, Session）
+- **[NEW] Email Verificationの動作確認**: 開発環境および本番環境でメールリンク認証が正常動作することを確認。
 
 ### 2. データ構造 (PostgreSQL)
 - **`exercises`**: 種目マスタ（全ユーザー共有）
-- **`training_history`**: トレーニング実績（ユーザーごと、セット単位でフラットに保存）
+- **`training_history`**: トレーニング実績（RLSによりユーザー自身のデータのみ参照・更新可能）
 - **`profiles`**: ユーザープロフィール
+  - Trigger `on_auth_user_created` により、Authユーザー作成時に自動でレコードが作成されます。
 
-### 3. アプリケーション改修
-- `storage.ts`: 全メソッドを非同期化し、Supabase SDKを使用するように書き換え
-- `TrainingLogForm`: 非同期保存に対応
-- `TrainingCalendar` / `TrainingHistory`: 非同期データ読み込みに対応
+### 3. デプロイ・運用 (Vercel)
+- GitHubリポジトリ (`main` branch) と連携し、Vercelへデプロイ。
+- 環境変数 (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`) をVercel Dashboard上で設定済み。
 
 ## 次のステップ
-- [ ] 既存データ（LocalStorage）のインポート機能？（今回は未実装）
+- [ ] 既存データ（LocalStorage）のインポート機能（現在は新規データのみ）
 - [ ] オフライン対応（Service Worker / PWA）の再検討
-- [ ] 種目マスタのユーザー追加UI（現状は保存時に自動追加されるが、一覧から選ぶ機能など）
+- [ ] 種目マスタのユーザー追加UI
