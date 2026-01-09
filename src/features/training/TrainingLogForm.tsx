@@ -58,9 +58,10 @@ function TrainingLogForm() {
     setIntervalSeconds(template.intervalSeconds ?? 90);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     try {
-      saveTrainingLog({
+      setSaveMessage('保存中...');
+      await saveTrainingLog({
         exercise,
         sets,
         intervalSeconds,
@@ -73,6 +74,7 @@ function TrainingLogForm() {
       setSets([{ weight: 40, reps: 10 }]);
       setIntervalSeconds(90);
     } catch (error) {
+      console.error(error);
       setSaveMessage('保存に失敗しました');
       setTimeout(() => setSaveMessage(null), 3000);
     }

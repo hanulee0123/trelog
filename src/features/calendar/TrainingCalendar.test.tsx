@@ -1,4 +1,4 @@
-import { render, screen, cleanup } from '@testing-library/react';
+import { render, screen, cleanup, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, afterEach } from 'vitest';
 import TrainingCalendar from './TrainingCalendar';
 import { TrainingLog } from '../../types/training';
@@ -25,34 +25,43 @@ const mockLogs: TrainingLog[] = [
 ];
 
 vi.mock('../../lib/storage', () => ({
-    getTrainingLogs: () => mockLogs,
+    getTrainingLogs: () => Promise.resolve(mockLogs),
 }));
 
 describe('TrainingCalendar Component', () => {
     afterEach(cleanup);
 
-    it('renders without crashing', () => {
+    it('renders without crashing', async () => {
         render(<TrainingCalendar />);
-        expect(screen.getByText(/の記録/)).toBeInTheDocument();
+        // Use findByRole to wait for the component to settle and target specific element
+        expect(await screen.findByRole('heading', { level: 3 })).toHaveTextContent(/の記録/);
     });
 
-    it('displays max weight in calendar tile for today', () => {
+    it('displays exercise name but NO weight in calendar tile for today', async () => {
         // Since we mocked today's date in mockLogs[0], it should appear in the calendar
-        render(<TrainingCalendar />);
+        const { container } = render(<TrainingCalendar />);
 
-        // We look for text content within the calendar tiles
-        // Note: react-calendar might render complex HTML, so we check for the expected text
-        // Manual truncation removed, CSS handles it. We expect full text in DOM.
-        expect(screen.getByText('60kg')).toBeInTheDocument();
-        const exerciseElements = screen.getAllByText('ベンチプレス');
-        expect(exerciseElements.length).toBeGreaterThan(0);
+        // Wait for logs to load and dots to appear
+        await waitFor(() => {
+            const dots = container.querySelectorAll('.calendar-exercise-dot');
+            expect(dots.length).toBeGreaterThan(0);
+        });
+
+        const dots = container.querySelectorAll('.calendar-exercise-dot');
+
+        // Verify content of the first dot (today's log)
+        // Should contain exercise name
+        expect(dots[0]).toHaveTextContent('ベンチプレス');
+        // Should NOT contain weight (60kg)
+        expect(dots[0]).not.toHaveTextContent('60kg');
     });
 
-    it('displays details for the selected date (today by default)', () => {
+    it('displays details for the selected date (today by default)', async () => {
         render(<TrainingCalendar />);
 
         // Check if the details section shows the max weight badge
-        expect(screen.getByText('Max 60kg')).toBeInTheDocument();
+        // Use findByText which waits for element to appear
+        expect(await screen.findByText('Max 60kg')).toBeInTheDocument();
 
         // Check if the exercise name is displayed in the list
         const detailElements = screen.getAllByText('ベンチプレス');

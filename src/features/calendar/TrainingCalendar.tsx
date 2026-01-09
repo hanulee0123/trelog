@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Calendar from 'react-calendar';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { ja } from 'date-fns/locale';
@@ -12,8 +12,15 @@ type Value = Date | null | [Date | null, Date | null];
 function TrainingCalendar() {
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-    // Load logs (in a real app, this should be in a useEffect or useQuery)
-    const allLogs = useMemo(() => getTrainingLogs(), []);
+    // Load logs asynchronously
+    const [allLogs, setAllLogs] = useState<TrainingLog[]>([]);
+    // const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        getTrainingLogs().then((logs) => {
+            setAllLogs(logs);
+        });
+    }, []);
 
     // Group logs by date string (YYYY-MM-DD) for O(1) lookup
     const logsByDate = useMemo(() => {
@@ -45,12 +52,9 @@ function TrainingCalendar() {
         return (
             <div className="calendar-tile-content">
                 {logs.map((log) => {
-                    // Calculate max weight for this exercise
-                    const maxWeight = Math.max(...log.sets.map((s) => s.weight));
                     return (
                         <div key={log.id} className="calendar-exercise-dot">
                             <span className="dot-name">{log.exercise}</span>
-                            <span className="dot-weight">{maxWeight}kg</span>
                         </div>
                     );
                 })}

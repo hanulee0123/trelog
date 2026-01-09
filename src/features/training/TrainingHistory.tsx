@@ -9,8 +9,8 @@ interface TrainingHistoryProps {
 function TrainingHistory({ onUpdate }: TrainingHistoryProps) {
   const [logs, setLogs] = useState<TrainingLog[]>([]);
 
-  const loadLogs = () => {
-    const loadedLogs = getTrainingLogs();
+  const loadLogs = async () => {
+    const loadedLogs = await getTrainingLogs();
     setLogs(loadedLogs);
   };
 
@@ -18,10 +18,10 @@ function TrainingHistory({ onUpdate }: TrainingHistoryProps) {
     loadLogs();
   }, []);
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('この記録を削除しますか？')) {
-      deleteTrainingLog(id);
-      loadLogs();
+      await deleteTrainingLog(id);
+      await loadLogs();
       onUpdate?.();
     }
   };
