@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react';
-import { TrainingEntry, TrainingSet } from '../../types/training';
-import { saveTrainingLog } from '../../lib/storage';
+import { useEffect, useMemo, useState } from 'react';
+import { TrainingEntry, TrainingSet, UserTemplate } from '../../types/training';
+import { saveTrainingLog, getUserTemplates, saveUserTemplate, deleteUserTemplate } from '../../lib/storage';
 
-const trainingTemplates: TrainingEntry[] = [
+const defaultTemplates: TrainingEntry[] = [
   {
     exercise: 'ベンチプレス',
     sets: [
@@ -29,6 +29,14 @@ function TrainingLogForm() {
   const [sets, setSets] = useState<TrainingSet[]>([{ weight: 40, reps: 10 }]);
   const [intervalSeconds, setIntervalSeconds] = useState<number | ''>(90);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [userTemplates, setUserTemplates] = useState<UserTemplate[]>([]);
+  const [templatesLoading, setTemplatesLoading] = useState(true);
+
+  useEffect(() => {
+    getUserTemplates()
+      .then(setUserTemplates)
+      .finally(() => setTemplatesLoading(false));
+  }, []);
 
   const stretchHints = useMemo(() => {
     if (exercise.includes('ベンチ')) {
@@ -57,6 +65,44 @@ function TrainingLogForm() {
     setExercise(template.exercise);
     setSets(template.sets);
     setIntervalSeconds(template.intervalSeconds ?? 90);
+  };
+
+  const applyUserTemplate = (template: UserTemplate) => {
+    setExercise(template.name);
+    setSets(template.sets);
+    setIntervalSeconds(template.intervalSeconds ?? 90);
+  };
+
+  const handleSaveAsTemplate = async () => {
+    try {
+      setSaveMessage('テンプレートを保存中...');
+      const saved = await saveUserTemplate({
+        name: exercise,
+        sets: sets.map((s) => ({
+          weight: s.weight === '' ? 0 : s.weight,
+          reps: s.reps === '' ? 0 : s.reps,
+        })),
+        intervalSeconds: intervalSeconds === '' ? undefined : intervalSeconds,
+      });
+      setUserTemplates((prev) => [...prev, saved]);
+      setSaveMessage('テンプレートを保存しました！');
+      setTimeout(() => setSaveMessage(null), 3000);
+    } catch (error) {
+      console.error(error);
+      setSaveMessage('テンプレートの保存に失敗しました');
+      setTimeout(() => setSaveMessage(null), 3000);
+    }
+  };
+
+  const handleDeleteTemplate = async (id: string) => {
+    try {
+      await deleteUserTemplate(id);
+      setUserTemplates((prev) => prev.filter((t) => t.id !== id));
+    } catch (error) {
+      console.error(error);
+      setSaveMessage('テンプレートの削除に失敗しました');
+      setTimeout(() => setSaveMessage(null), 3000);
+    }
   };
 
   const handleSave = async () => {
@@ -158,12 +204,37 @@ function TrainingLogForm() {
       </label>
 
       <div className="template-row">
-        <p className="field-label">テンプレートから選択</p>
+        <div className="template-header">
+          <p className="field-label">テンプレートから選択</p>
+          <button type="button" className="ghost-button" onClick={handleSaveAsTemplate}>
+            テンプレートとして保存
+          </button>
+        </div>
         <div className="template-list">
-          {trainingTemplates.map((template) => (
+          {defaultTemplates.map((template) => (
             <button key={template.exercise} type="button" onClick={() => applyTemplate(template)}>
               {template.exercise}
             </button>
+          ))}
+          {templatesLoading && <span className="field-label">読み込み中...</span>}
+          {userTemplates.map((template) => (
+            <span key={template.id} className="user-template-chip">
+              <button
+                type="button"
+                className="user-template-button"
+                onClick={() => applyUserTemplate(template)}
+              >
+                {template.name}
+              </button>
+              <button
+                type="button"
+                className="delete-template-button"
+                onClick={() => handleDeleteTemplate(template.id)}
+                aria-label={`${template.name}テンプレートを削除`}
+              >
+                ✕
+              </button>
+            </span>
           ))}
         </div>
       </div>

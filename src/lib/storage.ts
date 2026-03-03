@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { TrainingLog } from '../types/training';
+import { TrainingLog, UserTemplate } from '../types/training';
 
 export async function saveTrainingLog(log: Omit<TrainingLog, 'id'>): Promise<TrainingLog> {
   const { data: { user } } = await supabase.auth.getUser();
@@ -153,6 +153,63 @@ export async function clearAllLogs(): Promise<void> {
     .from('training_history')
     .delete()
     .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete allow rows
+
+  if (error) throw error;
+}
+
+export async function getUserTemplates(): Promise<UserTemplate[]> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from('training_templates')
+    .select('id, name, sets, interval_seconds')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching templates:', error);
+    return [];
+  }
+
+  return (data ?? []).map(row => ({
+    id: row.id,
+    name: row.name,
+    sets: row.sets as UserTemplate['sets'],
+    intervalSeconds: row.interval_seconds ?? undefined,
+  }));
+}
+
+export async function saveUserTemplate(template: Omit<UserTemplate, 'id'>): Promise<UserTemplate> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('User not authenticated');
+
+  const { data, error } = await supabase
+    .from('training_templates')
+    .insert({
+      user_id: user.id,
+      name: template.name,
+      sets: template.sets,
+      interval_seconds: template.intervalSeconds ?? null,
+    })
+    .select('id, name, sets, interval_seconds')
+    .single();
+
+  if (error) throw error;
+
+  return {
+    id: data.id,
+    name: data.name,
+    sets: data.sets as UserTemplate['sets'],
+    intervalSeconds: data.interval_seconds ?? undefined,
+  };
+}
+
+export async function deleteUserTemplate(id: string): Promise<void> {
+  const { error } = await supabase
+    .from('training_templates')
+    .delete()
+    .eq('id', id);
 
   if (error) throw error;
 }

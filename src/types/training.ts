@@ -18,3 +18,10 @@ export interface TrainingLog {
   intervalSeconds?: number;
   memo?: string;
 }
+
+export interface UserTemplate {
+  id: string;
+  name: string;
+  sets: TrainingSet[];
+  intervalSeconds?: number;
+}
