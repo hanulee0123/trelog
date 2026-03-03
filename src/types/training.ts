@@ -1,6 +1,6 @@
 export interface TrainingSet {
-  weight: number;
-  reps: number;
+  weight: number | '';
+  reps: number | '';
 }
 
 export interface TrainingEntry {

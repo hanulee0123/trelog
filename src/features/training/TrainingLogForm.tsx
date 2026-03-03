@@ -27,7 +27,7 @@ function TrainingLogForm() {
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [exercise, setExercise] = useState('ベンチプレス');
   const [sets, setSets] = useState<TrainingSet[]>([{ weight: 40, reps: 10 }]);
-  const [intervalSeconds, setIntervalSeconds] = useState(90);
+  const [intervalSeconds, setIntervalSeconds] = useState<number | ''>(90);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   const stretchHints = useMemo(() => {
@@ -40,7 +40,7 @@ function TrainingLogForm() {
     return ['全身ストレッチ'];
   }, [exercise]);
 
-  const updateSet = (index: number, key: keyof TrainingSet, value: number) => {
+  const updateSet = (index: number, key: keyof TrainingSet, value: number | '') => {
     setSets((prev) => prev.map((item, i) => (i === index ? { ...item, [key]: value } : item)));
   };
 
@@ -65,8 +65,11 @@ function TrainingLogForm() {
       await saveTrainingLog({
         date: new Date(date + 'T00:00:00').toISOString(),
         exercise,
-        sets,
-        intervalSeconds,
+        sets: sets.map((s) => ({
+          weight: s.weight === '' ? 0 : s.weight,
+          reps: s.reps === '' ? 0 : s.reps,
+        })),
+        intervalSeconds: intervalSeconds === '' ? 0 : intervalSeconds,
       });
       setSaveMessage('記録を保存しました！');
       setTimeout(() => setSaveMessage(null), 3000);
@@ -118,7 +121,7 @@ function TrainingLogForm() {
                 type="number"
                 inputMode="decimal"
                 value={item.weight}
-                onChange={(event) => updateSet(index, 'weight', Number(event.target.value))}
+                onChange={(event) => updateSet(index, 'weight', event.target.value === '' ? '' : Number(event.target.value))}
               />
             </label>
             <label className="field">
@@ -127,7 +130,7 @@ function TrainingLogForm() {
                 type="number"
                 inputMode="numeric"
                 value={item.reps}
-                onChange={(event) => updateSet(index, 'reps', Number(event.target.value))}
+                onChange={(event) => updateSet(index, 'reps', event.target.value === '' ? '' : Number(event.target.value))}
               />
             </label>
             {sets.length > 1 && (
@@ -150,7 +153,7 @@ function TrainingLogForm() {
           type="number"
           inputMode="numeric"
           value={intervalSeconds}
-          onChange={(event) => setIntervalSeconds(Number(event.target.value))}
+          onChange={(event) => setIntervalSeconds(event.target.value === '' ? '' : Number(event.target.value))}
         />
       </label>
 
