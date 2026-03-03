@@ -7,6 +7,7 @@ export interface TrainingEntry {
   exercise: string;
   sets: TrainingSet[];
   intervalSeconds?: number;
+  date?: string;
 }
 
 export interface TrainingLog {

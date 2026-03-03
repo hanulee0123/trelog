@@ -24,6 +24,7 @@ const trainingTemplates: TrainingEntry[] = [
 ];
 
 function TrainingLogForm() {
+  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [exercise, setExercise] = useState('ベンチプレス');
   const [sets, setSets] = useState<TrainingSet[]>([{ weight: 40, reps: 10 }]);
   const [intervalSeconds, setIntervalSeconds] = useState(90);
@@ -62,6 +63,7 @@ function TrainingLogForm() {
     try {
       setSaveMessage('保存中...');
       await saveTrainingLog({
+        date: new Date(date + 'T00:00:00').toISOString(),
         exercise,
         sets,
         intervalSeconds,
@@ -70,6 +72,7 @@ function TrainingLogForm() {
       setTimeout(() => setSaveMessage(null), 3000);
 
       // フォームをリセット
+      setDate(new Date().toISOString().slice(0, 10));
       setExercise('ベンチプレス');
       setSets([{ weight: 40, reps: 10 }]);
       setIntervalSeconds(90);
@@ -82,6 +85,15 @@ function TrainingLogForm() {
 
   return (
     <div className="stack gap-md">
+      <label className="field">
+        <span className="field-label">日付</span>
+        <input
+          type="date"
+          value={date}
+          onChange={(event) => setDate(event.target.value)}
+        />
+      </label>
+
       <label className="field">
         <span className="field-label">種目</span>
         <input

@@ -1,11 +1,11 @@
 import { supabase } from './supabase';
 import { TrainingLog } from '../types/training';
 
-export async function saveTrainingLog(log: Omit<TrainingLog, 'id' | 'date'>): Promise<TrainingLog> {
+export async function saveTrainingLog(log: Omit<TrainingLog, 'id'>): Promise<TrainingLog> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('User not authenticated');
 
-  const date = new Date().toISOString();
+  const date = log.date || new Date().toISOString();
 
   // 1. Get or Create Exercise ID (Global Master, but anyone can add?)
   // Policy says: "Authenticated users can create exercises"
