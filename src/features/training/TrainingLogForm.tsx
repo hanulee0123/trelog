@@ -111,7 +111,7 @@ function TrainingLogForm() {
           </button>
         </div>
         {sets.map((item, index) => (
-          <div key={`${index}-${item.weight}-${item.reps}`} className="set-row">
+          <div key={index} className="set-row">
             <label className="field">
               <span className="field-label">重量 (kg)</span>
               <input
